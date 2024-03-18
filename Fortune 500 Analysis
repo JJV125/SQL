@@ -109,3 +109,19 @@ GROUP BY
 ORDER BY
     avg_paid_time_off_days DESC
 LIMIT 1;
+
+-- Categorize companies based on average employee tenure
+SELECT
+    company_name,
+    AVG(avg_employee_tenure) AS avg_tenure_years,
+    CASE 
+        WHEN AVG(avg_employee_tenure) >= 6 THEN 'High'
+        WHEN AVG(avg_employee_tenure) >= 4 THEN 'Moderate'
+        ELSE 'Low'
+    END AS tenure_category
+FROM
+    fortune_companies
+GROUP BY
+    company_name
+ORDER BY
+    avg_tenure_years DESC;
