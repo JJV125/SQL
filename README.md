@@ -14,7 +14,7 @@ This repository serves as a showcase of my capabilities in SQL and Tableau, deve
 
 - **Fortune 500 Analysis:** Dive into the financial data of Fortune 500 companies, exploring trends, market insights, and key performance indicators.
 
-- **Customer & Order Analytics:** This project involves analyzing customer and order data from Netflix to gain insights into user behavior, preferences, and trends.
+- **Netflix Database Analysis:** This project involves analyzing customer and order data from Netflix to gain insights into user behavior, preferences, and trends.
 
 ### Tableau Projects
 
