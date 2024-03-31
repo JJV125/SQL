@@ -1,0 +1,54 @@
+--This query calculates the average popularity of the tracks for each artist
+SELECT artist_name, AVG(popularity) AS avg_popularity
+FROM Spotifydata
+GROUP BY artist_name
+ORDER BY avg_popularity ASC;
+
+--This query finds the top 10 most popular tracks and their corresponding artists
+SELECT track_name, artist_name, popularity
+FROM Spotifydata
+ORDER BY popularity DESC
+LIMIT 10;
+
+--This query calculates the average danceability and energy of tracks for each artist
+SELECT artist_name, AVG(danceability) AS avg_danceability, AVG(energy) AS avg_energy
+FROM Spotifydata
+GROUP BY artist_name
+ORDER BY avg_danceability DESC, avg_energy DESC;
+
+--This query finds tracks with high popularity and danceability, but low acousticness
+SELECT track_name, artist_name, popularity, danceability, acousticness
+FROM Spotifydata
+WHERE popularity > 70
+  AND danceability > 0.7
+  AND acousticness < 0.2
+ORDER BY popularity DESC;
+
+--This query retrieves the average loudness for each artist and then filters out those whose average loudness is less than -5.0 dB.
+SELECT artist_name, AVG(loudness) AS average_loudness
+FROM Spotifydata
+GROUP BY artist_name
+HAVING AVG(loudness) < -5.0; -- Selecting artists with an average loudness less than -5.0 dB
+
+--This query not only identifies the most common time signature and its average tempo but also provides additional insights by including the maximum and minimum tempo for each time signature
+SELECT 
+    time_signature, 
+    COUNT(*) AS num_tracks, 
+    AVG(tempo) AS average_tempo,
+    MAX(tempo) AS max_tempo,
+    MIN(tempo) AS min_tempo
+FROM Spotifydata
+GROUP BY time_signature
+ORDER BY num_tracks DESC
+LIMIT 1;
+
+--This query categorizes songs into three duration ranges (short, medium, and long) and calculates the average energy for songs within each range. It helps to analyze if there's any relationship between song duration and energy level.
+SELECT 
+CASE 
+        WHEN duration_ms < 180000 THEN 'Short (<3 mins)'
+        WHEN duration_ms BETWEEN 180000 AND 240000 THEN 'Medium (3-4 mins)'
+        WHEN duration_ms > 240000 THEN 'Long (>4 mins)'
+END AS duration_range, AVG(energy) AS average_energy
+FROM Spotifydata
+GROUP BY duration_range
+ORDER BY AVG(energy) DESC; --When this query is exectued the results suggests a potential positive correlation between song duration and energy levels, implying that longer songs may indeed have more energy on average. 
