@@ -1,0 +1,145 @@
+--In this project I was tasked with answering 14 questions based on a music store database. 
+
+--The 14 questions were as follows: 
+--Show Customers (their full names, customer ID, and country) who are not in the US. (Hint: != or <> can be used to say "is not equal to").
+--Show only the Customers from Brazil.
+--Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.
+--Show the Employees who are Sales Agents.
+--Find a unique/distinct list of billing countries from the Invoice table.
+--Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name.
+--Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+--How many Invoices were there in 2009?
+--What are the total sales for 2009?
+--Write a query that includes the purchased track name with each invoice line ID.
+--Write a query that includes the purchased track name AND artist name with each invoice line ID.
+--Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+--Show the total sales made by each sales agent.
+--Which sales agent made the most dollars in sales in 2009?
+
+--At the end I decided to answer 3 questions of my own and I wrote queries for them: 
+--Find the top 5 genres by total sales revenue
+-- Identify the most popular artist by the number of tracks sold
+--Find the total number of tracks sold by each employee for each genre
+
+
+-- This first query shows Customers (their full names, customer ID, and country) who are not in the US:
+SELECT FirstName || ' ' || LastName AS FullName, CustomerId, Country
+FROM customers
+WHERE Country != 'USA';
+
+--This query shows only the Customers from Brazil:
+SELECT FirstName || ' ' || LastName AS FullName, CustomerId, Country
+FROM customers
+WHERE Country = 'Brazil';
+
+--This query shows the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country:
+SELECT c.FirstName || ' ' || c.LastName AS FullName, i.InvoiceId, i.InvoiceDate, i.BillingCountry
+FROM invoices i
+INNER JOIN customers c ON i.CustomerId = c.CustomerId
+WHERE c.Country = 'Brazil';
+
+--This query shows the Employees who are Sales Agents.
+SELECT FirstName || ' ' || LastName AS FullName
+FROM employees
+WHERE Title = 'Sales Support Agent';
+
+--This query shows a unique/distinct list of billing countries from the Invoice table.
+SELECT DISTINCT BillingCountry
+FROM invoices;
+
+--This query shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name:
+SELECT e.FirstName || ' ' || e.LastName AS SalesAgent, i.*
+FROM invoices i
+INNER JOIN customers c ON i.CustomerId = c.CustomerId
+INNER JOIN employees e ON c.SupportRepId = e.EmployeeId;
+
+--This query shows the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers
+SELECT i.Total, c.FirstName || ' ' || c.LastName AS CustomerName, c.Country, e.FirstName || ' ' || e.LastName AS SalesAgent
+FROM invoices i
+INNER JOIN customers c ON i.CustomerId = c.CustomerId
+INNER JOIN employees e ON c.SupportRepId = e.EmployeeId;
+
+--This shows how many Invoices there were in 2009
+SELECT COUNT(*) AS TotalInvoices
+FROM invoices
+WHERE strftime('%Y', InvoiceDate) = '2009';
+
+--This query shows the total sales for 2009.
+SELECT SUM(Total) AS TotalSales
+FROM invoices
+WHERE strftime('%Y', InvoiceDate) = '2009';
+
+--This query includes the purchased track name with each invoice line ID:
+SELECT il.InvoiceLineId, t.Name AS TrackName
+FROM invoice_items il
+INNER JOIN tracks t ON il.TrackId = t.TrackId;
+
+--This query includes the purchased track name AND artist name with each invoice line ID:
+SELECT il.InvoiceLineId, t.Name AS TrackName, ar.Name AS ArtistName
+FROM invoice_items il
+INNER JOIN tracks t ON il.TrackId = t.TrackId
+INNER JOIN albums al ON t.AlbumId = al.AlbumId
+INNER JOIN artists ar ON al.ArtistId = ar.ArtistId;
+
+--This query shows all the Tracks, and includes the Album name, Media type, and Genre:
+SELECT t.Name AS TrackName, a.Title AS AlbumName, mt.Name AS MediaType, g.Name AS Genre
+FROM tracks t
+LEFT JOIN albums a ON t.AlbumId = a.AlbumId
+LEFT JOIN media_types mt ON t.MediaTypeId = mt.MediaTypeId
+LEFT JOIN genres g ON t.GenreId = g.GenreId;
+
+-- The use of a Common Table Expression (CTE) here helps organize the query by creating a temporary result set for aggregating sales data by sales agents, enhancing readability and maintainability. I'm using it to calculate the total sales made by each sales agent.
+WITH SalesAgentSales AS (
+    SELECT e.FirstName || ' ' || e.LastName AS SalesAgentName,
+           SUM(i.Total) AS TotalSales
+    FROM employees e
+    INNER JOIN customers c ON e.EmployeeId = c.SupportRepId
+    INNER JOIN invoices i ON c.CustomerId = i.CustomerId
+    GROUP BY e.EmployeeId
+)
+SELECT SalesAgentName, TotalSales -- by adding this query block here i'm breaking down my query into logical steps making it easier to understand and saving valuable time, as I would probably have to write additional subqueries or repeat complex logic if I didn't. 
+FROM SalesAgentSales;
+
+-- By employing a window function, this query efficiently calculates total sales for each sales agent in 2009, avoiding redundant computations and improving performance by analyzing data across related rows. 
+SELECT SalesAgentName, TotalSales
+FROM (
+    SELECT e.FirstName || ' ' || e.LastName AS SalesAgentName,
+           SUM(i.Total) AS TotalSales,
+           ROW_NUMBER() OVER (ORDER BY SUM(i.Total) DESC) AS SalesRank
+    FROM employees e
+    INNER JOIN customers c ON e.EmployeeId = c.SupportRepId
+    INNER JOIN invoices i ON c.CustomerId = i.CustomerId
+    WHERE strftime('%Y', i.InvoiceDate) = '2009'
+    GROUP BY e.EmployeeId
+)
+WHERE SalesRank = 1;
+
+--This query retrieves the top 5 genres by total sales revenue.
+SELECT g.Name AS Genre, SUM(ii.Quantity * ii.UnitPrice) AS TotalRevenue
+FROM genres g
+INNER JOIN tracks t ON g.GenreId = t.GenreId
+INNER JOIN invoice_items ii ON t.TrackId = ii.TrackId
+GROUP BY g.GenreId
+ORDER BY TotalRevenue DESC
+LIMIT 5;
+
+--This query determines the most popular artist based on the number of tracks sold.
+SELECT ar.Name AS Artist, COUNT(ii.TrackId) AS TotalTracksSold
+FROM artists ar
+INNER JOIN albums al ON ar.ArtistId = al.ArtistId
+INNER JOIN tracks t ON al.AlbumId = t.AlbumId
+INNER JOIN invoice_items ii ON t.TrackId = ii.TrackId
+GROUP BY ar.ArtistId
+ORDER BY TotalTracksSold DESC
+LIMIT 1;
+
+--This query calculates the total number of tracks sold by each employee for each genre.
+SELECT e.FirstName || ' ' || e.LastName AS EmployeeName, g.Name AS Genre, COUNT(ti.InvoiceLineId) AS TotalTracksSold
+FROM employees e
+JOIN customers c ON e.EmployeeId = c.SupportRepId
+JOIN invoices i ON c.CustomerId = i.CustomerId
+JOIN invoice_items ti ON i.InvoiceId = ti.InvoiceId
+JOIN tracks t ON ti.TrackId = t.TrackId
+JOIN genres g ON t.GenreId = g.GenreId
+GROUP BY e.EmployeeId, g.GenreId
+ORDER BY EmployeeName, TotalTracksSold DESC;
