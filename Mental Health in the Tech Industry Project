@@ -1,0 +1,91 @@
+--These queries cover various aspects of a mental health in the tech industry survey, providing insights into survey completion rates, user participation, question counts, and completion times.
+
+
+-- This query counts the total number of surveys in the database.
+SELECT COUNT(*) AS num_surveys
+FROM Survey;
+
+-- This query calculates the total number of questions for each survey.
+SELECT s.SurveyID, s.Description, COUNT(q.QuestionID) AS TotalQuestions
+FROM Survey s
+LEFT JOIN (
+    SELECT QuestionID, SurveyID
+    FROM Answer
+    GROUP BY QuestionID, SurveyID
+) q ON s.SurveyID = q.SurveyID
+GROUP BY s.SurveyID, s.Description;
+
+-- This query computes the average number of answers provided by each user. 
+SELECT AVG(answer_count) AS avg_answers_per_user
+FROM (
+    SELECT UserID, COUNT(*) AS answer_count
+    FROM Answer
+    GROUP BY UserID
+) subquery;
+
+-- This query identifies the user who provided the highest number of answers.
+SELECT UserID, COUNT(*) AS num_answers
+FROM Answer
+GROUP BY UserID
+ORDER BY num_answers DESC
+LIMIT 1;
+
+-- This query calculates the completion percentage for each survey.
+SELECT s.SurveyID, 
+       (CAST(SUM(CASE WHEN a.UserID IS NOT NULL THEN 1 ELSE 0 END) AS FLOAT) / COUNT(q.QuestionID)) * 100 AS completion_percentage
+FROM Survey s
+LEFT JOIN Question q ON 1 = 1 -- This condition ensures that each survey row is joined to all questions
+LEFT JOIN Answer a ON q.QuestionID = a.QuestionID AND s.SurveyID = a.SurveyID
+GROUP BY s.SurveyID
+ORDER BY completion_percentage DESC
+LIMIT 1;
+
+-- This query lists the top 5 users based on the count of unique answers they provided.
+SELECT UserID, COUNT(DISTINCT AnswerText) AS unique_answers_count
+FROM Answer
+GROUP BY UserID
+ORDER BY unique_answers_count DESC
+LIMIT 5;
+
+-- This query computes the average completion time (difference between first and last answer) for each survey.
+SELECT s.SurveyID, s.Description, AVG(completion_time) AS avg_completion_time
+FROM Survey s
+INNER JOIN (
+    SELECT SurveyID, UserID, MAX(rowid) - MIN(rowid) AS completion_time
+    FROM Answer
+    GROUP BY SurveyID, UserID
+) subquery ON s.SurveyID = subquery.SurveyID
+GROUP BY s.SurveyID, s.Description
+ORDER BY avg_completion_time DESC;
+
+-- This query identifies the survey with the longest completion time (difference between first and last answer).
+SELECT s.SurveyID, s.Description, MAX(completion_time) AS max_completion_time
+FROM Survey s
+INNER JOIN (
+    SELECT SurveyID, UserID, MAX(rowid) - MIN(rowid) AS completion_time
+    FROM Answer
+    GROUP BY SurveyID, UserID
+) subquery ON s.SurveyID = subquery.SurveyID
+GROUP BY s.SurveyID, s.Description
+ORDER BY max_completion_time DESC
+LIMIT 5;
+
+-- This query calculates the average completion time for surveys based on the length of their descriptions.
+SELECT LENGTH(s.Description) AS DescriptionLength,
+       AVG(completion_time) AS avg_completion_time
+FROM Survey s
+INNER JOIN (
+    SELECT SurveyID, MAX(rowid) - MIN(rowid) AS completion_time
+    FROM Answer
+    GROUP BY SurveyID
+) subquery ON s.SurveyID = subquery.SurveyID
+GROUP BY DescriptionLength
+ORDER BY DescriptionLength;
+
+-- This query determines the completion percentage for each survey year.
+SELECT s.SurveyID AS SurveyYear,
+       (CAST(COUNT(DISTINCT CASE WHEN a.UserID IS NOT NULL THEN a.UserID END) AS FLOAT) / COUNT(DISTINCT a.UserID)) * 100 AS completion_percentage
+FROM Survey s
+LEFT JOIN Answer a ON s.SurveyID = a.SurveyID
+GROUP BY SurveyYear
+ORDER BY SurveyYear;
