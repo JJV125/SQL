@@ -1,0 +1,73 @@
+-- By employing SQL queries on the Kaggle Amazon product review dataset, this project extracts actionable insights into reviewer behavior, product performance, and review characteristics. 
+-- These insights can inform decision-making processes for product managers, marketers, and customer support teams, enabling them to better understand customer sentiment and improve product offerings and user experiences.
+
+
+-- Top 10 Reviewers by Number of Reviews
+SELECT UserId, COUNT(*) AS NumReviews
+FROM Reviews
+GROUP BY UserId
+ORDER BY NumReviews DESC
+LIMIT 10;
+
+-- Average Score per Product
+SELECT ProductId, AVG(Score) AS AvgScore
+FROM Reviews
+GROUP BY ProductId;
+
+-- Reviews with Highest and Lowest Scores
+SELECT *
+FROM Reviews
+WHERE Score = (SELECT MAX(Score) FROM Reviews)
+   OR Score = (SELECT MIN(Score) FROM Reviews);
+
+-- Reviews with Highest Helpfulness Numerator
+SELECT *
+FROM Reviews
+WHERE HelpfulnessNumerator = (SELECT MAX(HelpfulnessNumerator) FROM Reviews);
+
+-- Average Helpfulness Ratio of Reviews
+SELECT AVG(CAST(HelpfulnessNumerator AS FLOAT) / HelpfulnessDenominator) AS AvgHelpfulnessRatio
+FROM Reviews;
+
+-- Distribution of Reviews by Score
+SELECT Score, COUNT(*) AS NumReviews
+FROM Reviews
+GROUP BY Score
+ORDER BY Score;
+
+-- Monthly Review Count
+SELECT STRFTIME('%Y-%m', DATETIME(Time, 'unixepoch')) AS YearMonth,
+       COUNT(*) AS NumReviews
+FROM Reviews
+GROUP BY YearMonth
+ORDER BY YearMonth; -- This query utilizes SQLite's built-in date and time functions, STRFTIME and DATETIME, to convert the Unix epoch timestamp (stored in 'Time' column) into a human-readable Year-Month format. It then counts the number of reviews submitted in each month, providing valuable insights into the temporal distribution of reviews over time.
+
+-- Top 10 Reviewed Products
+SELECT ProductId, COUNT(*) AS NumReviews
+FROM Reviews
+GROUP BY ProductId
+ORDER BY NumReviews DESC
+LIMIT 10;
+
+-- Average Review Length
+SELECT AVG(LENGTH(Text)) AS AvgReviewLength
+FROM Reviews;
+
+-- Average Helpfulness Ratio by Score
+SELECT Score, 
+       AVG(CAST(HelpfulnessNumerator AS FLOAT) / HelpfulnessDenominator) AS AvgHelpfulnessRatio
+FROM Reviews
+GROUP BY Score
+ORDER BY Score;
+
+-- Longest Review
+SELECT *
+FROM Reviews
+WHERE LENGTH(Text) = (SELECT MAX(LENGTH(Text)) FROM Reviews);
+
+-- Top 10 Reviewers by Number of Reviews
+SELECT UserId, COUNT(*) AS NumReviews
+FROM Reviews
+GROUP BY UserId
+ORDER BY NumReviews DESC
+LIMIT 10;
