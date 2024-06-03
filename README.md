@@ -40,7 +40,7 @@ With a strong foundation in data analytics acquired through the Data Analytics C
 
 ## Let's Connect!
 
-Interested in learning more about my projects or discussing potential opportunities for collaboration? [email](mailto:your.email@example.com) me or connect with me on [LinkedIn](https://www.linkedin.com/in/your-linkedin-profile/). I'm always eager to connect with fellow data enthusiasts and explore new opportunities in the field of data analytics.
+Interested in learning more about my projects or discussing potential opportunities for collaboration? [email](mailto:vancejordan.work@gmail.com) me or connect with me on [LinkedIn](https://www.linkedin.com/in/jordan-vance-66a99621a/). I'm always eager to connect with fellow data enthusiasts and explore new opportunities in the field of data analytics.
 
 Thank you for your interest, and I look forward to connecting with you!
 
