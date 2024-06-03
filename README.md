@@ -16,6 +16,14 @@ This repository serves as a showcase of my capabilities in SQL and Tableau, deve
 
 - **Netflix Database Analysis:** This project involves analyzing customer and order data from Netflix to gain insights into user behavior, preferences, and trends.
 
+- **Amazon Customer Reviews Project**
+
+- **Mental Health in the Tech Industry Survey**
+
+- **Spotify Analysis**
+
+- **Music Store Database (Final SQL Project)**
+
 ### Tableau Projects
 
 - **World COVID Data Dashboard:** Visualize global COVID-19 data, including infection rates, mortality rates, and vaccination progress, to provide real-time insights into the pandemic's impact.
@@ -23,6 +31,8 @@ This repository serves as a showcase of my capabilities in SQL and Tableau, deve
 - **Product & Order Analytics:** Create interactive dashboards to analyze product performance, order trends, and customer behavior, enabling data-driven decision-making for e-commerce businesses.
 
 - **Executive Overview Dashboard:** Develop executive-level dashboards to present high-level business metrics, KPIs, and performance indicators in a concise and visually appealing format.
+
+- **World Happiness Report**
 
 ## Why Choose Me?
 
