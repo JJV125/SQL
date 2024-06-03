@@ -34,6 +34,10 @@ This repository serves as a showcase of my capabilities in SQL and Tableau, deve
 
 - **World Happiness Report**:
 
+## Tableau Public Portfolio
+
+Check out my Tableau Public portfolio [here](https://public.tableau.com/app/profile/jordan.vance3976/vizzes).
+
 ## Why Choose Me?
 
 With a strong foundation in data analytics acquired through the Data Analytics Certificate Program, I am well-equipped to tackle complex business challenges and drive decision-making through data-driven insights. My dedication to continuous learning and problem-solving, combined with my technical skills in SQL and Tableau, make me a valuable asset to any organization seeking to harness the power of data.
