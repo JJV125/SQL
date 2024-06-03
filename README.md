@@ -16,13 +16,13 @@ This repository serves as a showcase of my capabilities in SQL and Tableau, deve
 
 - **Netflix Database Analysis:** This project involves analyzing customer and order data from Netflix to gain insights into user behavior, preferences, and trends.
 
-- **Amazon Customer Reviews Project**
+- **Amazon Customer Reviews Project**:
 
-- **Mental Health in the Tech Industry Survey**
+- **Mental Health in the Tech Industry Survey**:
 
-- **Spotify Analysis**
+- **Spotify Analysis Project**:
 
-- **Music Store Database (Final SQL Project)**
+- **Music Store Database (Final SQL Project)**:
 
 ### Tableau Projects
 
@@ -32,7 +32,7 @@ This repository serves as a showcase of my capabilities in SQL and Tableau, deve
 
 - **Executive Overview Dashboard:** Develop executive-level dashboards to present high-level business metrics, KPIs, and performance indicators in a concise and visually appealing format.
 
-- **World Happiness Report**
+- **World Happiness Report**:
 
 ## Why Choose Me?
 
