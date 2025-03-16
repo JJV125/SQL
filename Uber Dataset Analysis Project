@@ -1,0 +1,62 @@
+-- Uber Dataset Analysis in SQLiteStudio
+
+-- Check available tables
+SELECT name FROM sqlite_master WHERE type='table';
+
+-- Get table structure
+PRAGMA table_info(UberData);
+
+-- Count total rides in the dataset
+SELECT COUNT(*) AS Total_Rides FROM UberData;
+
+-- Find the top 10 busiest pickup locations
+SELECT START AS Pickup_Location, COUNT(*) AS Ride_Count
+FROM UberData
+GROUP BY START
+ORDER BY Ride_Count DESC
+LIMIT 10;
+
+-- Find the busiest drop-off locations
+SELECT STOP AS Dropoff_Location, COUNT(*) AS Dropoff_Count
+FROM UberData
+GROUP BY STOP
+ORDER BY Dropoff_Count DESC
+LIMIT 10;
+
+-- Calculate the average miles per ride
+SELECT AVG(MILES) AS Average_Miles FROM UberData;
+
+-- Find peak ride hours (assuming START_DATE is in a valid datetime format)
+SELECT strftime('%H', START_DATE) AS Hour, COUNT(*) AS Ride_Count
+FROM UberData
+GROUP BY Hour
+ORDER BY Ride_Count DESC;
+
+-- Find rides per day of the week
+SELECT strftime('%w', START_DATE) AS Day_of_Week, COUNT(*) AS Ride_Count
+FROM UberData
+GROUP BY Day_of_Week
+ORDER BY Ride_Count DESC;
+
+-- Find total miles driven
+SELECT SUM(MILES) AS Total_Miles FROM UberData;
+
+-- Find the most frequent ride categories
+SELECT CATEGORY, COUNT(*) AS Category_Count
+FROM UberData
+GROUP BY CATEGORY
+ORDER BY Category_Count DESC;
+
+-- Find the most common trip purpose
+SELECT PURPOSE, COUNT(*) AS Purpose_Count
+FROM UberData
+GROUP BY PURPOSE
+ORDER BY Purpose_Count DESC;
+
+-- Find the longest trip distance recorded
+SELECT MAX(MILES) AS Longest_Trip FROM UberData;
+
+
+--Project Purpose:
+-- This SQL project analyzes Uber ride data stored in SQLite.
+-- It provides insights into trip distances, busiest locations, ride trends, and category distributions.
