@@ -22,7 +22,10 @@ This repository serves as a showcase of my capabilities in SQL and Tableau, deve
 
 - **Spotify Analysis Project**:
 
+- **Uber Dataset Analysis Project**
+
 - **Music Store Database (Final SQL Project)**:
+
 
 ### Tableau Projects
 
